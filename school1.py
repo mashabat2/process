@@ -80,32 +80,15 @@ class SplitChild:
         print('В ' + str(random.randint(1, 11)) + ' классе учатся:', random_class, '\n')
         self._mutex.release()
 def main():
+
     t0 = time.time()
-
-    p = Process(target=An.f, args=('a.txt',))
-    p.start()
-    p.join()
-
-    print('time:', time.time() - t0)
-
+    p1 = Process(target=An.f, args=('a.txt',))
     '''Второй процесс'''
 
     t0 = time.time()
-
     q = Queue(2)
     A = Thread(target=SearchName.splitting, args=(q, "A class:"))
     B = Thread(target=SearchName.splitting, args=(q, "B class:"))
-
-    A.start()
-    B.start()
-
-    SearchName('a.txt').search(q)
-
-    A.join()
-    B.join()
-
-    print('time:', time.time() - t0)
-
 
     '''Процесс 3'''
     t0 = time.time()
@@ -113,17 +96,22 @@ def main():
     text = ReadText('a.txt').read_text()
 
     childs = SplitChild(text)
-    p = Thread(target=childs.f)
-    p2 = Thread(target=childs.f)
+    r = Thread(target=childs.f)
+    r2 = Thread(target=childs.f)
 
-    p.start()
-    p.join()
-
-    p2.start()
-    p2.join()
-
+    p1.start()
+    A.start()
+    B.start()
+    r.start()
+    r2.start()
+    SearchName('a.txt').search(q)
     print('time:', time.time() - t0)
-
+    A.join()
+    p1.join()
+    print('time:', time.time() - t0)
+    B.join()
+    r.join()
+    r2.join()
 
 
 
